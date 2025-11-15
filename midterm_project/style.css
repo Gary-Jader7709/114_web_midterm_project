@@ -1,0 +1,78 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.card {
+  border-radius: 0.75rem;
+}
+
+#task-list .list-group-item {
+  border-radius: 0.75rem;
+}
+
+.task-title.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-meta {
+  font-size: 0.8rem;
+}
+
+.badge-priority-low {
+  background-color: #e2f3da;
+  color: #3e7b27;
+}
+
+.badge-priority-medium {
+  background-color: #fff3cd;
+  color: #8a6d3b;
+}
+
+.badge-priority-high {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.btn-icon {
+  padding: 0.15rem 0.4rem;
+}
+
+/* 深色模式 */
+body.dark-mode {
+  background-color: #121212;
+  color: #f8f9fa;
+}
+
+body.dark-mode .card {
+  background-color: #1f1f1f;
+  color: #f8f9fa;
+}
+
+body.dark-mode .list-group-item {
+  background-color: #1f1f1f;
+  color: #f8f9fa;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode textarea {
+  background-color: #2a2a2a;
+  color: #f8f9fa;
+  border-color: #444;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #aaaaaa;
+}
+
+body.dark-mode .btn-outline-dark {
+  border-color: #f8f9fa;
+  color: #f8f9fa;
+}
+
+body.dark-mode .text-muted {
+  color: #bbbbbb !important;
+}

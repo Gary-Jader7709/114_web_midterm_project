@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>迷你待辦清單 - Midterm Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="py-4">
+  <div class="container">
+    <header class="mb-4 d-flex justify-content-between align-items-start">
+      <div>
+        <h1 class="h3 mb-1">迷你待辦清單</h1>
+        <p class="text-muted mb-0">
+          使用 DOM 事件委派、表單驗證與 localStorage 的小型 To-Do 應用。
+        </p>
+      </div>
+      <button id="theme-toggle" class="btn btn-sm btn-outline-dark">
+        🌙 深色模式
+      </button>
+    </header>
+
+    <main class="row g-4">
+      <!-- 左側：新增待辦表單 -->
+      <section class="col-lg-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h2 class="h5 mb-3">新增待辦事項</h2>
+            <form id="task-form" novalidate>
+              <!-- 標題 -->
+              <div class="mb-3">
+                <label class="form-label" for="task-title">事項內容</label>
+                <input
+                  id="task-title"
+                  name="task-title"
+                  class="form-control"
+                  type="text"
+                  required
+                  minlength="2"
+                  maxlength="50"
+                  aria-describedby="task-title-error"
+                  placeholder="例如：完成網頁程式設計作業"
+                />
+                <p
+                  id="task-title-error"
+                  class="text-danger small mb-0"
+                  aria-live="polite"
+                ></p>
+              </div>
+
+              <!-- 類別 -->
+              <div class="mb-3">
+                <label class="form-label" for="task-category">類別</label>
+                <select
+                  id="task-category"
+                  name="task-category"
+                  class="form-select"
+                  required
+                  aria-describedby="task-category-error"
+                >
+                  <option value="" disabled selected>請選擇類別</option>
+                  <option value="school">課業</option>
+                  <option value="work">工作</option>
+                  <option value="life">生活</option>
+                  <option value="other">其他</option>
+                </select>
+                <p
+                  id="task-category-error"
+                  class="text-danger small mb-0"
+                  aria-live="polite"
+                ></p>
+              </div>
+
+              <!-- 類別為「其他」時顯示（選填） -->
+              <div class="mb-3 d-none" id="custom-tag-group">
+                <label class="form-label" for="custom-tag">自訂標籤（選填）</label>
+                <input
+                  id="custom-tag"
+                  name="custom-tag"
+                  class="form-control"
+                  type="text"
+                  maxlength="20"
+                  placeholder="例如：打工、社團、運動（可以不填）"
+                />
+                <div class="form-text">
+                  當類別選「其他」時，如果想更精準，可以在這裡打自己的標籤。
+                </div>
+              </div>
+
+              <!-- 截止日期 -->
+              <div class="mb-3">
+                <label class="form-label" for="task-due">截止日期</label>
+                <input
+                  id="task-due"
+                  name="task-due"
+                  class="form-control"
+                  type="date"
+                  aria-describedby="task-due-error"
+                />
+                <p
+                  id="task-due-error"
+                  class="text-danger small mb-0"
+                  aria-live="polite"
+                ></p>
+                <div class="form-text">若有截止日期，請避免選擇已過去的日期。</div>
+              </div>
+
+              <!-- 優先順序 -->
+              <fieldset class="mb-3">
+                <legend class="form-label fs-6 mb-1">優先順序</legend>
+                <div class="d-flex flex-wrap gap-2" aria-describedby="priority-error">
+                  <div class="form-check">
+                    <input
+                      id="priority-low"
+                      class="form-check-input"
+                      type="radio"
+                      name="priority"
+                      value="low"
+                      required
+                    />
+                    <label class="form-check-label" for="priority-low">低</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      id="priority-medium"
+                      class="form-check-input"
+                      type="radio"
+                      name="priority"
+                      value="medium"
+                    />
+                    <label class="form-check-label" for="priority-medium">中</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      id="priority-high"
+                      class="form-check-input"
+                      type="radio"
+                      name="priority"
+                      value="high"
+                    />
+                    <label class="form-check-label" for="priority-high">高</label>
+                  </div>
+                </div>
+                <p
+                  id="priority-error"
+                  class="text-danger small mb-0"
+                  aria-live="polite"
+                ></p>
+              </fieldset>
+
+              <div class="d-grid gap-2">
+                <button id="add-btn" class="btn btn-primary" type="submit">
+                  新增待辦
+                </button>
+                <button id="reset-form-btn" class="btn btn-outline-secondary" type="button">
+                  清除表單
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右側：待辦清單 -->
+      <section class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+              <div>
+                <h2 class="h5 mb-0">待辦清單</h2>
+                <p class="text-muted small mb-0">
+                  目前共有 <span id="task-count">0</span> 筆事項。
+                </p>
+              </div>
+              <!-- 篩選按鈕（事件委派） -->
+              <div
+                id="filter-group"
+                class="btn-group"
+                role="group"
+                aria-label="篩選待辦事項"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary active"
+                  data-filter="all"
+                >
+                  全部
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-filter="active"
+                >
+                  未完成
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  data-filter="completed"
+                >
+                  已完成
+                </button>
+              </div>
+            </div>
+
+            <ul id="task-list" class="list-group vstack gap-2">
+              <!-- JS 動態產生 -->
+            </ul>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button
+                id="clear-completed-btn"
+                class="btn btn-outline-success btn-sm"
+                type="button"
+              >
+                清除已完成
+              </button>
+              <button
+                id="clear-all-btn"
+                class="btn btn-outline-danger btn-sm"
+                type="button"
+              >
+                清除全部
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-muted small mb-0">
+          ※ 此專案示範：事件委派、Constraint Validation API、自訂錯誤訊息、送出攔截與 localStorage。
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
