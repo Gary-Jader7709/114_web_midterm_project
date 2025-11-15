@@ -35,4 +35,4 @@
    - 重新整理頁面後仍能保留資料。
 
 ## GitHub Pages 網址
-
+https://gary-jader7709.github.io/114_web_midterm_project/
